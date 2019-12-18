@@ -135,6 +135,10 @@ impl error::Error for Error {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
         error::Error::source(&self.0)
     }
+
+    fn source(&self) -> Option<&error::Error + 'static> {
+        error::Error::source(&self.0)
+    }
 }
 
 impl fmt::Display for Error {
