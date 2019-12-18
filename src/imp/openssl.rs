@@ -10,14 +10,14 @@ use self::openssl::ssl::{
     self, MidHandshakeSslStream, SslAcceptor, SslConnector, SslContextBuilder, SslMethod,
     SslVerifyMode,
 };
-use self::openssl::x509::{X509, X509VerifyResult};
+use self::openssl::x509::{X509VerifyResult, X509};
 use std::error;
 use std::fmt;
 use std::io;
 use std::sync::Once;
 
-use {Protocol, TlsAcceptorBuilder, TlsConnectorBuilder};
 use self::openssl::pkey::Private;
+use {Protocol, TlsAcceptorBuilder, TlsConnectorBuilder};
 
 #[cfg(have_min_max_version)]
 fn supported_protocols(
@@ -121,13 +121,6 @@ pub enum Error {
 
 impl error::Error for Error {
     fn source(&self) -> Option<&(dyn error::Error + 'static)> {
-        match *self {
-            Error::Normal(ref e) => error::Error::source(e),
-            Error::Ssl(ref e, _) => error::Error::source(e),
-        }
-    }
-
-    fn source(&self) -> Option<&error::Error + 'static> {
         match *self {
             Error::Normal(ref e) => Some(e),
             Error::Ssl(ref e, _) => Some(e),
